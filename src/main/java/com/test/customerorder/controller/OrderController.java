@@ -3,6 +3,7 @@ package com.test.customerorder.controller;
 import com.test.customerorder.Enum.OrderStatus;
 import com.test.customerorder.dto.OrderDto;
 import com.test.customerorder.entity.Order;
+import com.test.customerorder.exception.RecordNotFoundException;
 import com.test.customerorder.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,7 @@ public class OrderController {
   }
 
   @PostMapping("/save")
-  public  Order addOrder(@RequestBody Order order){
+  public  Order addOrder(@RequestBody Order order) throws RecordNotFoundException {
     return  orderService.addOrder(order);
   }
 

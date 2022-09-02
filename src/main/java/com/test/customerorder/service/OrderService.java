@@ -2,7 +2,10 @@ package com.test.customerorder.service;
 
 import com.test.customerorder.Enum.OrderStatus;
 import com.test.customerorder.dto.OrderDto;
+import com.test.customerorder.entity.Customer;
 import com.test.customerorder.entity.Order;
+import com.test.customerorder.exception.RecordNotFoundException;
+import com.test.customerorder.repository.CustomerRepository;
 import com.test.customerorder.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,8 +21,10 @@ public class OrderService{
     @Autowired
     private  OrderRepository orderRepository;
 
-    private Order order;
-    private OrderStatus status;
+    @Autowired
+    private CustomerRepository customerRepository;
+  //  private Order order;
+ //   private OrderStatus status;
 
     //GetById Mapping USing DTO
     public OrderDto getDepartureDto(int id) {
@@ -41,8 +47,17 @@ public class OrderService{
     }
 
     //Post Mapping
-    public Order addOrder(Order order) {
-        return  orderRepository.save(order);
+    public Order addOrder(Order order) throws RecordNotFoundException {
+        int id = order.getCustomer().getId();
+        Optional<Customer> customer=customerRepository.findById(id);
+       if (customer!=null){
+         //  order.setId(order.getId());
+           order.setCustomer(order.getCustomer());
+           return orderRepository.save(order);
+       }else {
+           throw new RecordNotFoundException("Record not exist");
+       }
+      //  return  orderRepository.save(order);
     }
 
 
